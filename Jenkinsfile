@@ -57,8 +57,8 @@ pipeline {
 
         stage('Trivy Scan') {
             steps {
-                sh "/home/udit/2ndSem/SPEProject/tools/trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE_BACKEND}:latest"
-                sh "/home/udit/2ndSem/SPEProject/tools/trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE_FRONTEND}:latest"
+                sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE_BACKEND}:latest"
+                sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE_FRONTEND}:latest"
             }
         }
 
@@ -77,10 +77,10 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
-                    kubectl apply -f k8s/mysql-deployment.yaml
-                    kubectl apply -f k8s/deployment.yaml
-                    kubectl apply -f k8s/service.yaml
-                    kubectl apply -f k8s/frontend-deployment.yaml
+                    kubectl apply -f k8s/mysql-deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
+                    kubectl apply -f k8s/deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
+                    kubectl apply -f k8s/service.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
+                    kubectl apply -f k8s/frontend-deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
                 '''
             }
         }
