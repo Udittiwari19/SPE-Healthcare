@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     project_dir: "{{ lookup('env', 'WORKSPACE') | default('/home/udit/2ndSem/SPEProject', true) }}"
-    kubeconfig_path: "{{ project_dir }}/kubeconfig"
+    kubeconfig_path: "/home/udit/2ndSem/SPEProject/kubeconfig"
   tasks:
     - name: Apply MySQL Deployment
       command: "kubectl apply -f k8s/mysql-deployment.yaml --kubeconfig={{ kubeconfig_path }}"
