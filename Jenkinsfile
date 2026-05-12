@@ -35,7 +35,7 @@ pipeline {
                           -Dsonar.projectKey=healthcare-backend \
                           -Dsonar.projectName="Healthcare Backend" \
                           -Dsonar.host.url=http://localhost:9000 \
-                          -Dsonar.token=${SONARQUBE_TOKEN}
+                          -Dsonar.login=${SONARQUBE_TOKEN}
                     '''
                 }
             }
