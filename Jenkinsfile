@@ -57,8 +57,12 @@ pipeline {
 
         stage('Trivy Scan') {
             steps {
-                sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --timeout 15m --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE_BACKEND}:latest"
-                sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --timeout 15m --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE_FRONTEND}:latest"
+                sh '''
+                    docker save -o backend.tar ${DOCKER_IMAGE_BACKEND}:latest
+                    docker save -o frontend.tar ${DOCKER_IMAGE_FRONTEND}:latest
+                    docker run --rm -v $(pwd):/workspace aquasec/trivy:latest image --timeout 15m --exit-code 0 --severity HIGH,CRITICAL --input /workspace/backend.tar
+                    docker run --rm -v $(pwd):/workspace aquasec/trivy:latest image --timeout 15m --exit-code 0 --severity HIGH,CRITICAL --input /workspace/frontend.tar
+                '''
             }
         }
 
