@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: healthcare-backend
-          image: udit/healthcare-backend:latest
+          image: udit019/healthcare-backend:latest
           ports:
             - containerPort: 8080
           env:

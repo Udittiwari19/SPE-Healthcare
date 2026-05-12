@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
-        DOCKER_IMAGE_BACKEND = 'udit/healthcare-backend'
-        DOCKER_IMAGE_FRONTEND = 'udit/healthcare-frontend'
+        DOCKER_IMAGE_BACKEND = 'udit019/healthcare-backend'
+        DOCKER_IMAGE_FRONTEND = 'udit019/healthcare-frontend'
         SONARQUBE_TOKEN = credentials('sonarqube-token')
     }
 

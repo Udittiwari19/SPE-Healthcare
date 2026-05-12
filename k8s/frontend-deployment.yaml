@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: healthcare-frontend
-          image: udit/healthcare-frontend:latest
+          image: udit019/healthcare-frontend:latest
           ports:
             - containerPort: 80
           resources:
