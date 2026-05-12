@@ -2,23 +2,26 @@
 - name: Deploy Healthcare App to Kubernetes
   hosts: local
   gather_facts: false
+  vars:
+    project_dir: "{{ lookup('env', 'WORKSPACE') | default('/home/udit/2ndSem/SPEProject', true) }}"
+    kubeconfig_path: "{{ project_dir }}/kubeconfig"
   tasks:
     - name: Apply MySQL Deployment
-      command: kubectl apply -f k8s/mysql-deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
+      command: "kubectl apply -f k8s/mysql-deployment.yaml --kubeconfig={{ kubeconfig_path }}"
       args:
-        chdir: /home/udit/2ndSem/SPEProject
+        chdir: "{{ project_dir }}"
 
     - name: Apply Backend Deployment
-      command: kubectl apply -f k8s/deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
+      command: "kubectl apply -f k8s/deployment.yaml --kubeconfig={{ kubeconfig_path }}"
       args:
-        chdir: /home/udit/2ndSem/SPEProject
+        chdir: "{{ project_dir }}"
 
     - name: Apply Services
-      command: kubectl apply -f k8s/service.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
+      command: "kubectl apply -f k8s/service.yaml --kubeconfig={{ kubeconfig_path }}"
       args:
-        chdir: /home/udit/2ndSem/SPEProject
+        chdir: "{{ project_dir }}"
 
     - name: Apply Frontend Deployment
-      command: kubectl apply -f k8s/frontend-deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
+      command: "kubectl apply -f k8s/frontend-deployment.yaml --kubeconfig={{ kubeconfig_path }}"
       args:
-        chdir: /home/udit/2ndSem/SPEProject
+        chdir: "{{ project_dir }}"
