@@ -1,0 +1,24 @@
+---
+- name: Deploy Healthcare App to Kubernetes
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Apply MySQL Deployment
+      command: kubectl apply -f k8s/mysql-deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
+      args:
+        chdir: /home/udit/2ndSem/SPEProject
+
+    - name: Apply Backend Deployment
+      command: kubectl apply -f k8s/deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
+      args:
+        chdir: /home/udit/2ndSem/SPEProject
+
+    - name: Apply Services
+      command: kubectl apply -f k8s/service.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
+      args:
+        chdir: /home/udit/2ndSem/SPEProject
+
+    - name: Apply Frontend Deployment
+      command: kubectl apply -f k8s/frontend-deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
+      args:
+        chdir: /home/udit/2ndSem/SPEProject

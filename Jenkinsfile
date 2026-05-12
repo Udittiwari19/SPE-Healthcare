@@ -80,12 +80,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh '''
-                    kubectl apply -f k8s/mysql-deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
-                    kubectl apply -f k8s/deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
-                    kubectl apply -f k8s/service.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
-                    kubectl apply -f k8s/frontend-deployment.yaml --kubeconfig=/home/udit/2ndSem/SPEProject/kubeconfig
-                '''
+                sh 'ansible-playbook -i ansible/inventory ansible/deploy-k8s.yml'
             }
         }
     }
