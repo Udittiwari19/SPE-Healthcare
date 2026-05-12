@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/udit/healthcare-devops.git'
+                git branch: 'main', url: 'https://github.com/Udittiwari19/SPE-Healthcare.git'
             }
         }
 
@@ -57,8 +57,8 @@ pipeline {
 
         stage('Trivy Scan') {
             steps {
-                sh "trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE_BACKEND}:latest"
-                sh "trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE_FRONTEND}:latest"
+                sh "/home/udit/2ndSem/SPEProject/tools/trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE_BACKEND}:latest"
+                sh "/home/udit/2ndSem/SPEProject/tools/trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE_FRONTEND}:latest"
             }
         }
 
