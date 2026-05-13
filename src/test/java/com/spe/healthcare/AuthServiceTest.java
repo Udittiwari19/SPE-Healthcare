@@ -40,7 +40,7 @@ class AuthServiceTest {
     private AuthService authService;
 
     @Test
-    void register_Success() {
+    void register_FirstUser_Success() {
         RegisterRequest request = new RegisterRequest();
         request.setUsername("testuser");
         request.setPassword("password123");
@@ -48,6 +48,7 @@ class AuthServiceTest {
 
         when(userRepository.existsByUsername("testuser")).thenReturn(false);
         when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
+        when(userRepository.count()).thenReturn(0L); // First user
         when(passwordEncoder.encode("password123")).thenReturn("encodedPass");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(jwtUtil.generateToken(anyString(), anyString())).thenReturn("jwt-token");
@@ -57,7 +58,29 @@ class AuthServiceTest {
         assertNotNull(response);
         assertEquals("testuser", response.getUsername());
         assertEquals("jwt-token", response.getToken());
-        assertEquals("USER", response.getRole());
+        assertEquals("ADMIN", response.getRole()); // First user gets ADMIN
+    }
+
+    @Test
+    void register_SecondUser_Success() {
+        RegisterRequest request = new RegisterRequest();
+        request.setUsername("testuser2");
+        request.setPassword("password123");
+        request.setEmail("test2@example.com");
+
+        when(userRepository.existsByUsername("testuser2")).thenReturn(false);
+        when(userRepository.existsByEmail("test2@example.com")).thenReturn(false);
+        when(userRepository.count()).thenReturn(1L); // Not first user
+        when(passwordEncoder.encode("password123")).thenReturn("encodedPass");
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(jwtUtil.generateToken(anyString(), anyString())).thenReturn("jwt-token");
+
+        AuthResponse response = authService.register(request);
+
+        assertNotNull(response);
+        assertEquals("testuser2", response.getUsername());
+        assertEquals("jwt-token", response.getToken());
+        assertEquals("USER", response.getRole()); // Subsequent user gets USER
     }
 
     @Test
