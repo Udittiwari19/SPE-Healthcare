@@ -1,0 +1,11 @@
+---
+# Plain-text variable mappings that reference vault-encrypted secrets
+# These variables are used in role templates via Jinja2
+
+mysql_root_password: "{{ vault_mysql_root_password }}"
+jwt_secret: "{{ vault_jwt_secret }}"
+docker_hub_username: "{{ vault_docker_hub_username }}"
+
+# Kubernetes configuration
+kubeconfig_path: "/home/udit/2ndSem/SPEProject/kubeconfig"
+project_dir: "{{ lookup('env', 'WORKSPACE') | default('/home/udit/2ndSem/SPEProject', true) }}"

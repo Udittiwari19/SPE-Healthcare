@@ -1,0 +1,26 @@
+---
+# Backend Role — Deploy Spring Boot backend to Kubernetes
+
+- name: Render Backend deployment manifest
+  ansible.builtin.template:
+    src: deployment.yaml.j2
+    dest: "{{ project_dir }}/k8s/deployment.yaml"
+    mode: '0644'
+
+- name: Render Backend service manifest
+  ansible.builtin.template:
+    src: service.yaml.j2
+    dest: "{{ project_dir }}/k8s/service.yaml"
+    mode: '0644'
+
+- name: Apply Backend Deployment
+  ansible.builtin.command:
+    cmd: "kubectl apply -f k8s/deployment.yaml --kubeconfig={{ kubeconfig_path }}"
+    chdir: "{{ project_dir }}"
+  changed_when: true
+
+- name: Apply Backend Service
+  ansible.builtin.command:
+    cmd: "kubectl apply -f k8s/service.yaml --kubeconfig={{ kubeconfig_path }}"
+    chdir: "{{ project_dir }}"
+  changed_when: true

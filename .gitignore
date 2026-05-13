@@ -21,3 +21,5 @@ Thumbs.db
 tools/
 .vscode/
 *.war
+# Ansible Vault
+ansible/.vault_pass

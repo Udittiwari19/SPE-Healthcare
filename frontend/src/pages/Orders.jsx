@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { getUserOrders } from '../services/api';
-import { FiPackage, FiClock, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+import { getUserOrders, cancelUserOrder } from '../services/api';
+import { FiPackage, FiClock, FiCheckCircle, FiXCircle, FiX } from 'react-icons/fi';
 
 function Orders() {
     const [orders, setOrders] = useState([]);
@@ -19,6 +19,17 @@ function Orders() {
             toast.error('Failed to load orders');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleCancel = async (orderId) => {
+        if (!window.confirm('Are you sure you want to cancel this order?')) return;
+        try {
+            await cancelUserOrder(orderId);
+            toast.success('Order cancelled successfully');
+            fetchOrders();
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to cancel order');
         }
     };
 
@@ -68,12 +79,20 @@ function Orders() {
                                     <span className="price-value">${order.totalPrice?.toFixed(2)}</span>
                                 </div>
                             </div>
-                            <div className="order-footer">
+                            <div className="order-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span className="order-date">
                                     {order.orderDate ? new Date(order.orderDate).toLocaleDateString('en-US', {
                                         year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                                     }) : 'N/A'}
                                 </span>
+                                {order.status === 'PENDING' && (
+                                    <button 
+                                        className="btn-cancel-order"
+                                        onClick={() => handleCancel(order.id)}
+                                    >
+                                        <FiX /> Cancel Order
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))}

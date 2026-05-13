@@ -73,13 +73,58 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + orderId));
 
         try {
+            Order.OrderStatus oldStatus = order.getStatus();
             Order.OrderStatus newStatus = Order.OrderStatus.valueOf(status.toUpperCase());
-            order.setStatus(newStatus);
+
+            if (oldStatus != newStatus) {
+                Medicine medicine = order.getMedicine();
+
+                // If changing to CANCELLED, restore stock
+                if (newStatus == Order.OrderStatus.CANCELLED) {
+                    medicine.setStock(medicine.getStock() + order.getQuantity());
+                    medicineService.updateMedicine(medicine.getId(), medicine);
+                }
+                // If changing from CANCELLED back to active, deduct stock
+                else if (oldStatus == Order.OrderStatus.CANCELLED) {
+                    if (medicine.getStock() < order.getQuantity()) {
+                        throw new RuntimeException("Insufficient stock to un-cancel order");
+                    }
+                    medicine.setStock(medicine.getStock() - order.getQuantity());
+                    medicineService.updateMedicine(medicine.getId(), medicine);
+                }
+
+                order.setStatus(newStatus);
+            }
+
             Order updated = orderRepository.save(order);
             logger.info("Order #{} status updated to {}", orderId, newStatus);
             return updated;
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid order status: " + status);
         }
+    }
+
+    @Transactional
+    public Order cancelOrder(String username, Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (!order.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("You do not have permission to cancel this order");
+        }
+
+        if (order.getStatus() != Order.OrderStatus.PENDING) {
+            throw new RuntimeException("Only pending orders can be cancelled");
+        }
+
+        Medicine medicine = order.getMedicine();
+        medicine.setStock(medicine.getStock() + order.getQuantity());
+        medicineService.updateMedicine(medicine.getId(), medicine);
+
+        order.setStatus(Order.OrderStatus.CANCELLED);
+        Order updated = orderRepository.save(order);
+        
+        logger.info("Order #{} cancelled by user {}", orderId, username);
+        return updated;
     }
 }

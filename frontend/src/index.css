@@ -489,6 +489,27 @@ a:hover { color: var(--accent-hover); }
 }
 .order-date { font-size: 0.8rem; color: var(--text-muted); }
 
+.btn-cancel-order {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-cancel-order:hover {
+  background: var(--danger);
+  color: white;
+}
+
+
 /* ---- Admin Panel ---- */
 .tabs {
   display: flex;

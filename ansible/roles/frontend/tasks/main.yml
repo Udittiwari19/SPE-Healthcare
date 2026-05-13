@@ -1,0 +1,14 @@
+---
+# Frontend Role — Deploy React frontend to Kubernetes
+
+- name: Render Frontend deployment manifest
+  ansible.builtin.template:
+    src: frontend-deployment.yaml.j2
+    dest: "{{ project_dir }}/k8s/frontend-deployment.yaml"
+    mode: '0644'
+
+- name: Apply Frontend Deployment
+  ansible.builtin.command:
+    cmd: "kubectl apply -f k8s/frontend-deployment.yaml --kubeconfig={{ kubeconfig_path }}"
+    chdir: "{{ project_dir }}"
+  changed_when: true

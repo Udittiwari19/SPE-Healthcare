@@ -1,27 +1,19 @@
 ---
+# Main Playbook — Deploy Healthcare App to Kubernetes
+# Uses Ansible Roles for modular deployment and Vault for secret management
+#
+# Usage:
+#   ansible-playbook deploy-k8s.yml -i inventory --vault-password-file .vault_pass
+
 - name: Deploy Healthcare App to Kubernetes
   hosts: local
   gather_facts: false
-  vars:
-    project_dir: "{{ lookup('env', 'WORKSPACE') | default('/home/udit/2ndSem/SPEProject', true) }}"
-    kubeconfig_path: "/home/udit/2ndSem/SPEProject/kubeconfig"
-  tasks:
-    - name: Apply MySQL Deployment
-      command: "kubectl apply -f k8s/mysql-deployment.yaml --kubeconfig={{ kubeconfig_path }}"
-      args:
-        chdir: "{{ project_dir }}"
-
-    - name: Apply Backend Deployment
-      command: "kubectl apply -f k8s/deployment.yaml --kubeconfig={{ kubeconfig_path }}"
-      args:
-        chdir: "{{ project_dir }}"
-
-    - name: Apply Services
-      command: "kubectl apply -f k8s/service.yaml --kubeconfig={{ kubeconfig_path }}"
-      args:
-        chdir: "{{ project_dir }}"
-
-    - name: Apply Frontend Deployment
-      command: "kubectl apply -f k8s/frontend-deployment.yaml --kubeconfig={{ kubeconfig_path }}"
-      args:
-        chdir: "{{ project_dir }}"
+  roles:
+    - role: mysql
+      tags: [mysql, database]
+    - role: backend
+      tags: [backend, app]
+    - role: frontend
+      tags: [frontend, app]
+    - role: hpa
+      tags: [hpa, scaling]

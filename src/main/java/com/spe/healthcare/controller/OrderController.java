@@ -45,4 +45,9 @@ public class OrderController {
             @Valid @RequestBody StatusUpdateRequest request) {
         return ResponseEntity.ok(orderService.updateOrderStatus(id, request.getStatus()));
     }
+
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<Order> cancelOrder(@PathVariable Long id, Authentication authentication) {
+        return ResponseEntity.ok(orderService.cancelOrder(authentication.getName(), id));
+    }
 }

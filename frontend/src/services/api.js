@@ -47,5 +47,6 @@ export const placeOrder = (data) => api.post('/orders', data);
 export const getUserOrders = () => api.get('/orders');
 export const getAllOrders = () => api.get('/orders/all');
 export const updateOrderStatus = (id, status) => api.put(`/orders/${id}/status`, { status });
+export const cancelUserOrder = (id) => api.put(`/orders/${id}/cancel`);
 
 export default api;
