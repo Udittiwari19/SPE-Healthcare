@@ -104,6 +104,7 @@ services:
   sonarqube:
     image: sonarqube:lts-community
     container_name: healthcare-sonarqube
+    restart: on-failure
     environment:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
     ports:
