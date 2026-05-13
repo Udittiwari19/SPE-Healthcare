@@ -1,9 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FiShoppingCart, FiUser, FiLogOut, FiShield, FiHome } from 'react-icons/fi';
+import { useCart } from '../context/CartContext';
+import { FiShoppingCart, FiUser, FiLogOut, FiShield, FiHome, FiPackage } from 'react-icons/fi';
 
 function Navbar() {
     const { user, logout, isAdmin } = useAuth();
+    const { cartCount } = useCart();
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -21,7 +23,12 @@ function Navbar() {
             </div>
             <div className="nav-links">
                 <Link to="/" className="nav-link"><FiHome /> Dashboard</Link>
-                <Link to="/orders" className="nav-link"><FiShoppingCart /> Orders</Link>
+                <Link to="/cart" className="nav-link cart-link">
+                    <FiShoppingCart />
+                    Cart
+                    {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+                </Link>
+                <Link to="/orders" className="nav-link"><FiPackage /> Orders</Link>
                 {isAdmin() && (
                     <Link to="/admin" className="nav-link admin-link"><FiShield /> Admin</Link>
                 )}

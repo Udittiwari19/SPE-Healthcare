@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Cart from './pages/Cart';
 import Orders from './pages/Orders';
 import AdminPanel from './pages/AdminPanel';
 
@@ -29,6 +30,7 @@ function App() {
                     <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
                     <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
                     <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                    <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
                     <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
                     <Route path="/admin" element={<ProtectedRoute adminOnly><AdminPanel /></ProtectedRoute>} />
                 </Routes>
@@ -39,3 +41,4 @@ function App() {
 }
 
 export default App;
+

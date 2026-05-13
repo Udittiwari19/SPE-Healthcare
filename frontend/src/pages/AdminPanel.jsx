@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { getMedicines, addMedicine, updateMedicine, deleteMedicine, getAllOrders } from '../services/api';
+import { getMedicines, addMedicine, updateMedicine, deleteMedicine, getAllOrders, updateOrderStatus } from '../services/api';
 import { FiPlus, FiEdit2, FiTrash2, FiPackage, FiX } from 'react-icons/fi';
 
 function AdminPanel() {
@@ -74,6 +74,16 @@ function AdminPanel() {
         } catch { toast.error('Delete failed'); }
     };
 
+    const handleStatusChange = async (orderId, newStatus) => {
+        try {
+            await updateOrderStatus(orderId, newStatus);
+            toast.success(`Order #${orderId} updated to ${newStatus}`);
+            fetchOrders();
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Status update failed');
+        }
+    };
+
     return (
         <div className="admin-page">
             <div className="page-header">
@@ -139,7 +149,19 @@ function AdminPanel() {
                                         <td>{order.medicine?.name}</td>
                                         <td>{order.quantity}</td>
                                         <td>${order.totalPrice?.toFixed(2)}</td>
-                                        <td><span className={`status-badge ${order.status?.toLowerCase()}`}>{order.status}</span></td>
+                                        <td>
+                                            <select
+                                                className={`status-select ${order.status?.toLowerCase()}`}
+                                                value={order.status}
+                                                onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                                            >
+                                                <option value="PENDING">Pending</option>
+                                                <option value="CONFIRMED">Confirmed</option>
+                                                <option value="SHIPPED">Shipped</option>
+                                                <option value="DELIVERED">Delivered</option>
+                                                <option value="CANCELLED">Cancelled</option>
+                                            </select>
+                                        </td>
                                         <td>{order.orderDate ? new Date(order.orderDate).toLocaleDateString() : '-'}</td>
                                     </tr>
                                 ))}

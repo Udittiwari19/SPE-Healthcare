@@ -26,6 +26,7 @@ function Orders() {
         switch (status) {
             case 'PENDING': return <FiClock className="status-pending" />;
             case 'CONFIRMED': return <FiCheckCircle className="status-confirmed" />;
+            case 'SHIPPED': return <FiPackage className="status-shipped" />;
             case 'DELIVERED': return <FiCheckCircle className="status-delivered" />;
             case 'CANCELLED': return <FiXCircle className="status-cancelled" />;
             default: return <FiClock />;

@@ -66,4 +66,20 @@ public class OrderService {
     public List<Order> getAllOrders() {
         return orderRepository.findAllByOrderByOrderDateDesc();
     }
+
+    @Transactional
+    public Order updateOrderStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with id: " + orderId));
+
+        try {
+            Order.OrderStatus newStatus = Order.OrderStatus.valueOf(status.toUpperCase());
+            order.setStatus(newStatus);
+            Order updated = orderRepository.save(order);
+            logger.info("Order #{} status updated to {}", orderId, newStatus);
+            return updated;
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid order status: " + status);
+        }
+    }
 }

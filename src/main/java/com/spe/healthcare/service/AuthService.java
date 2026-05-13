@@ -40,15 +40,23 @@ public class AuthService {
             throw new RuntimeException("Email already exists");
         }
 
+        // First user gets ADMIN role automatically
+        User.Role assignedRole = userRepository.count() == 0 ? User.Role.ADMIN : User.Role.USER;
+
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
-                .role(User.Role.USER)
+                .role(assignedRole)
                 .build();
 
         userRepository.save(user);
-        logger.info("New user registered: {}", user.getUsername());
+
+        if (assignedRole == User.Role.ADMIN) {
+            logger.info("First user '{}' auto-promoted to ADMIN", user.getUsername());
+        } else {
+            logger.info("New user registered: {}", user.getUsername());
+        }
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
         return AuthResponse.builder()

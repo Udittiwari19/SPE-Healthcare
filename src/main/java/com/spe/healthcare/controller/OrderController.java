@@ -1,10 +1,12 @@
 package com.spe.healthcare.controller;
 
 import com.spe.healthcare.dto.OrderRequest;
+import com.spe.healthcare.dto.StatusUpdateRequest;
 import com.spe.healthcare.model.Order;
 import com.spe.healthcare.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +34,15 @@ public class OrderController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Order>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
+    }
+
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long id,
+            @Valid @RequestBody StatusUpdateRequest request) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, request.getStatus()));
     }
 }

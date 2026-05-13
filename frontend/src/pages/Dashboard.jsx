@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { getMedicines, searchMedicines, placeOrder } from '../services/api';
-import { FiSearch, FiShoppingCart, FiPackage, FiDollarSign } from 'react-icons/fi';
+import { getMedicines, searchMedicines } from '../services/api';
+import { useCart } from '../context/CartContext';
+import { FiSearch, FiShoppingCart, FiPackage, FiDollarSign, FiCheck } from 'react-icons/fi';
 
 function Dashboard() {
     const [medicines, setMedicines] = useState([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
+    const { addToCart, isInCart } = useCart();
 
     useEffect(() => {
         fetchMedicines();
@@ -38,14 +40,9 @@ function Dashboard() {
         }
     };
 
-    const handleOrder = async (medicineId) => {
-        try {
-            await placeOrder({ medicineId, quantity: 1 });
-            toast.success('Order placed successfully!');
-            fetchMedicines(); // refresh stock
-        } catch (err) {
-            toast.error(err.response?.data?.message || 'Order failed');
-        }
+    const handleAddToCart = (medicine) => {
+        addToCart(medicine);
+        toast.success(`${medicine.name} added to cart!`);
     };
 
     if (loading) return <div className="loading"><span className="spinner-lg"></span></div>;
@@ -91,13 +88,19 @@ function Dashboard() {
                                     Stock: {med.stock}
                                 </span>
                             </div>
-                            <button
-                                className="btn-order"
-                                onClick={() => handleOrder(med.id)}
-                                disabled={med.stock <= 0}
-                            >
-                                <FiShoppingCart /> {med.stock <= 0 ? 'Out of Stock' : 'Order Now'}
-                            </button>
+                            {isInCart(med.id) ? (
+                                <button className="btn-in-cart" disabled>
+                                    <FiCheck /> In Cart ✓
+                                </button>
+                            ) : (
+                                <button
+                                    className="btn-order"
+                                    onClick={() => handleAddToCart(med)}
+                                    disabled={med.stock <= 0}
+                                >
+                                    <FiShoppingCart /> {med.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
+                                </button>
+                            )}
                         </div>
                     ))}
                 </div>

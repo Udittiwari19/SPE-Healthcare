@@ -46,5 +46,6 @@ export const deleteMedicine = (id) => api.delete(`/medicines/${id}`);
 export const placeOrder = (data) => api.post('/orders', data);
 export const getUserOrders = () => api.get('/orders');
 export const getAllOrders = () => api.get('/orders/all');
+export const updateOrderStatus = (id, status) => api.put(`/orders/${id}/status`, { status });
 
 export default api;
