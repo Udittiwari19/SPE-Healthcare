@@ -80,6 +80,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
+                sh 'cp /home/udit/2ndSem/SPEProject/ansible/.vault_pass ansible/.vault_pass'
                 sh 'ansible-playbook -i ansible/inventory ansible/deploy-k8s.yml --vault-password-file ansible/.vault_pass'
             }
         }
