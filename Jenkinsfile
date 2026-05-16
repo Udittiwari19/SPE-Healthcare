@@ -93,9 +93,15 @@ pipeline {
         }
         success {
             echo 'Pipeline completed successfully!'
+            mail to: 'admin@example.com', // Change this to your actual email address
+                 subject: "SUCCESS: Healthcare Pipeline - Job '${env.JOB_NAME}' [${env.BUILD_NUMBER}]",
+                 body: "Good news! The SPE Healthcare CI/CD pipeline completed successfully.\n\nYou can view the full console output here: ${env.BUILD_URL}"
         }
         failure {
             echo 'Pipeline failed!'
+            mail to: 'admin@example.com', // Change this to your actual email address
+                 subject: "FAILURE: Healthcare Pipeline - Job '${env.JOB_NAME}' [${env.BUILD_NUMBER}]",
+                 body: "Uh oh! The SPE Healthcare CI/CD pipeline failed during execution.\n\nPlease check the console output to investigate the issue: ${env.BUILD_URL}"
         }
     }
 }
