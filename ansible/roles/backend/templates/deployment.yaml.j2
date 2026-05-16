@@ -29,6 +29,8 @@ spec:
                 secretKeyRef:
                   name: mysql-secret
                   key: mysql-root-password
+            - name: LOGSTASH_HOST
+              value: host.minikube.internal
           resources:
             requests:
               memory: "256Mi"

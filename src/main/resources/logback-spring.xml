@@ -11,7 +11,7 @@
 
     <!-- Logstash Appender for ELK -->
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>logstash:5000</destination>
+        <destination>${LOGSTASH_HOST:-logstash}:5000</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <customFields>{"app_name":"healthcare-backend","environment":"production"}</customFields>
         </encoder>
